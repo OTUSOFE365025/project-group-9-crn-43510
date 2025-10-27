@@ -9,4 +9,12 @@ Add the Use Cases to this file
 **Trigger:** Student asks the AI any question in the web, on their mobile device or desktop, or by voice activation. (R1, R4, RS9)   
   <br>  
   
-#Use Case 2 - #  
+<h1>Use Case 1 - </h1>   
+
+**Goal:** 
+**Scope:**  
+**Stakeholders/Interests:** 
+**Preconditions:** 
+**Trigger:**    
+  <br>  
+  
