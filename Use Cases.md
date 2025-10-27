@@ -11,10 +11,10 @@ Add the Use Cases to this file
   
 <h1>Use Case 1 - </h1>   
 
-**Goal:** 
-**Scope:**  
-**Stakeholders/Interests:** 
-**Preconditions:** 
-**Trigger:**    
+**Goal:**   
+**Scope:**    
+**Stakeholders/Interests:**   
+**Preconditions:**   
+**Trigger:**      
   <br>  
   
