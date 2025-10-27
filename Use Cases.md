@@ -1,6 +1,6 @@
 Add the Use Cases to this file
 
-#Use Case 1 - Exam Schedule and Notifications
+<h1>Use Case 1 - Exam Schedule and Notifications</h1>
 
 **Goal:** Request and recieve accurate answers on scheduled times for exams and tests for the student's currently enrolled courses.  
 **Scope:** AIDAP platform, Registration Services, and Calendar systems.  
