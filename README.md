@@ -1,9 +1,9 @@
 # Software Design & Architecture (SOFE3650) - Final Project
-**CRN 43510 - Group 9**
-**Tuesday, October 28, 2025**
-**AI Powered Digital Assistant Platform (AIDAP) for a conversational User Interface(UI) for University/College/School System Services**
----
-**SOFE3650F25 Project Repository** 
+**CRN 43510 - Group 9**  
+**Tuesday, October 28, 2025**  
+**AI Powered Digital Assistant Platform (AIDAP) for a conversational User Interface(UI) for University/College/School System Services**  
+---  
+**SOFE3650F25 Project Repository**   
 ---
 
 AIDAP is a conversational assistant for students, lecturers, and administrators. It answers common academic questions, sends reminders, and integrates with university systems (LMS, registration, calendars, email). The assistant uses AI for intent understanding and for generating grounded responses.   
