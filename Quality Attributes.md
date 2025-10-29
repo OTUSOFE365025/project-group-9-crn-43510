@@ -8,4 +8,7 @@
 | QA6  | Maintainability           | System maintainers can deploy updates without downtime.                | Use Case 7 - System Maintenance & Monitoring             |
 | QA7  | Interoperability          | Data synchronization works correctly across LMS, Registration, Calendar, and Email systems. | Use Case 8 - Data Synchronization with External Systems |
 | QA8  | Scalability               | System can handle up to 5,000 students and lecturers concurrently. | Use Case 1, 2, 3, 4, 6                                     |
-| QA9  | Accuracy                  | Academic analytics reports reflect correct grades and attendance data. | Use Case 5 - Academic Analytics and Reports              |
+| QA9  | Privacy                   | Personal Information/Identification info is never exposed in logs or requests/queries | Use Cases 1, 2, 3, 4, 5, 6              |
+| QA10 | Accessibility             | All processes and data flows are usable through the keyboad, monitor, any input/output device | Use Cases 1, 2, 3              |
+| QA11 | Diversity                 | System services used by students(query/answer, info, site services, can be viewed in any language | Use Cases 1, 2              |
+| QA12 | Auditability              | All read/write actions of student data is recorded/logged with their User ID, resource used, time, and action, to observed shortly when necessary. | Use Cases 6, 7   |
