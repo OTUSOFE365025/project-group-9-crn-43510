@@ -12,4 +12,4 @@
 | QA10 | Accessibility             | All processes and data flows are usable through the keyboad, monitor, any input/output device | Use Cases 1, 2, 3              |
 | QA11 | Diversity                 | System services used by students(query/answer, info, site services, can be viewed in any language | Use Cases 1, 2              |
 | QA12 | Auditability              | All read/write actions of student data is recorded/logged with their User ID, resource used, time, and action, to observed shortly when necessary. | Use Cases 6, 7   |
-| QA13 | Compliance                 | System services and data follows legal, ethical, and institutional policies; users can request review of data and export/deletion of data when needed. | Use Cases 6, 7              |
+| QA13 | Compliance                 | System services and data follows legal, ethical, and institutional policies; users can request review of data and export/deletion of data when needed. | Use Cases 6, 7, 10              |
