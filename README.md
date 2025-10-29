@@ -13,7 +13,7 @@ AIDAP provides conversational access to institutional data and services (R1), st
 
 ---
 
-Deliverables and due dates (course)
+### Deliverables and due dates (course)
 
 **Deliverable 1** — Requirements Analysis: Use case models, quality attributes, system constraints, architectural concerns, business case. Due *Oct 28*. 
 
@@ -22,6 +22,8 @@ Deliverables and due dates (course)
 **Deliverable 3** — Design of a Use Case & ATAM: Include all 3 ADD iterations and an ATAM scenario analysis table. Due *Dec 6*. 
 
 ---
+
+### Stakeholder Requirements
 
 **Student (RS1 - RS14):** Ask any administrative and academic questions at any time, site preference change availablility, site accessibility on any platform, student diversity, etc.
 
