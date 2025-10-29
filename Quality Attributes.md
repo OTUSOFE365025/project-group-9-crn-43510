@@ -7,7 +7,7 @@
 | QA5  | Availability              | Announcements reach all relevant users without delay.                  | Use Case 4 - Announcements & Notifications                |
 | QA6  | Maintainability           | System maintainers can deploy updates without downtime.                | Use Case 7 - System Maintenance & Monitoring             |
 | QA7  | Interoperability          | Data synchronization works correctly across LMS, Registration, Calendar, and Email systems. | Use Case 8 - Data Synchronization with External Systems |
-| QA8  | Scalability               | System can handle up to 5,000 students and lecturers concurrently. | Use Case 1, 2, 3, 4, 6                                     |
+| QA8  | Scalability               | System can handle up to 5,000 students and lecturers concurrently. | Use Cases 1, 2, 3, 4, 6                                     |
 | QA9  | Privacy                   | Personal Information/Identification info is never exposed in logs or requests/queries | Use Cases 1, 2, 3, 4, 5, 6              |
 | QA10 | Accessibility             | All processes and data flows are usable through the keyboad, monitor, any input/output device | Use Cases 1, 2, 3              |
 | QA11 | Diversity                 | System services used by students(query/answer, info, site services, can be viewed in any language | Use Cases 1, 2              |
