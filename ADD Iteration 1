@@ -1,1 +1,38 @@
 Include in this file the 7 steps for Iteration 1
+
+##ADD Iteration 1 — AI-Powered Digital Assistant Platform (AIDAP)##  
+
+####1. Architectural Drivers####
+**1.1 Functional Requirements**
+
+*Key functional drivers:*
+
+R1: Conversational access to institutional data  
+R3: Integration with LMS, registration, calendars  
+R5–R6: AI model interpretation + response generation  
+R7: Cloud-native & scalable  
+RS10, RS11: Performance (2 sec response), availability (99.5%)  
+RS7: SSO authentication  
+RL1–RL2: Lecturer content publishing  
+RA1–RA7: Admin integrations, policies, analytics  
+
+**1.2 Quality Attributes**  
+*Primary QAs:*
+
+Performance: Avg 2 sec responses (RS10).  
+Scalability: 5,000 concurrent users (RA7).  
+Availability: 99.5% uptime (RS11).  
+Security & Privacy: SSO + role-based access + compliance (RS7, RA5).  
+Modifiability: Extending AI models, new APIs (RM5, RM3).  
+Interoperability: Standard APIs: REST/GraphQL (RD2).  
+Usability: Conversational UI (RS12).
+  
+**1.3 Constraints**  
+
+Must comply with institutional privacy policies (R8).  
+Must integrate with university SSO.  
+Must be cloud-deployable (R7).  
+Must use standard APIs for all external integration.  
+  
+####2. Reference Architecture Choice####  
+Selected Architecture: Microservices + Event-Driven Architecture (Cloud-Native)
