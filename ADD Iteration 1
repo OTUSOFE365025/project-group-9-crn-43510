@@ -1,4 +1,5 @@
-Attribute-Driven Design (ADD) is a step-by-step way to design an architecture starting from using requirements and quality attributes, instead of directly start with low-level code or classes. In this tutorial assignment we are completing 1 iteration of the ADD Process for the cash register system. 
+Attribute-Driven Design (ADD) is a step-by-step way to design an architecture starting from using requirements and quality attributes, 
+instead of directly start with low-level code or classes. In this tutorial assignment we are completing 1 iteration of the ADD Process for the cash register system. 
 ADD Process Iteration Steps: 
 1. Review Input: Examine the use cases, quality attributes, and constraints for this iteration. 
 2. Establish iteration goal by selecting drivers 
