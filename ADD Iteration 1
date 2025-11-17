@@ -1,4 +1,13 @@
-Include in this file the 7 steps for Iteration 1
+Attribute-Driven Design (ADD) is a step-by-step way to design an architecture starting from using requirements and quality attributes, instead of directly start with low-level code or classes. In this tutorial assignment we are completing 1 iteration of the ADD Process for the cash register system. 
+ADD Process Iteration Steps: 
+1. Review Input: Examine the use cases, quality attributes, and constraints for this iteration. 
+2. Establish iteration goal by selecting drivers 
+3. Choose one or more elements of the system to decompose 
+4. Choose one or more design concepts that satisfy the selected drivers 
+5. Instantiate architectural elements, allocate responsibilities and define interfaces 
+6. Sketch views and record design decisions 
+7. Perform analysis of current design and review iteration goal and design objectives 
+
 
 ##ADD Iteration 1 — AI-Powered Digital Assistant Platform (AIDAP)##  
 
