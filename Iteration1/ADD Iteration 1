@@ -73,3 +73,26 @@ ADD Process Iteration Steps:
     - Data Storage Layer – combines SQL and NoSQL storage
     - Monitoring / Logging – tracks performance, errors, and general usage statistics
   Each component has a distinct responsibility that makes the system easier to maintain and evolve.
+
+5. High Level Architecture Diagram for AIDAP
+
+    Image in file.
+
+6. Deployment Diagram/VIew for Iteration 1
+
+  *Diagram in File
+
+  How the system is distributed
+
+    - Front-end clients: web browsers, mobile apps, or voice interfaces
+    - API Gateway: hosted in the cloud with load balancing
+    - Service cluster: where all microservices run, each with auto-scaling as needed
+    - Databases: combination of SQL (structured) and NoSQL (documents, chat logs)
+    - External systems: LMS, Registration, Calendar, Email servers
+  
+  Deployment considerations
+  
+    - The NLU and Orchestrator must scale horizontally
+    - Notifications benefit from message queues
+    - Storage is intentionally split into structured and unstructured layers
+    - Monitoring/logging should run alongside the microservices for visibility
