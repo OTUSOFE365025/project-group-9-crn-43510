@@ -114,6 +114,39 @@ Step 6 — Sketch Views & Record Design Decisions
     - User → ConversationHistory (one-to-many)
     - Course → Announcements (one-to-many)
     - User → Notifications (one-to-many)
+  Use Cases:
+    - UC1: Exam Schedule and Notifications
+    - Use case diagram in file*
+| Component              | Method                                  | Purpose                   |
+| ---------------------- | --------------------------------------- | ------------------------- |
+| NLU / AI               | classifyIntent(text)                    | Determine student intent  |
+| NLU / AI               | extractEntities(text)                   | Extract course/exam info  |
+| Profile Service        | getUserProfile(studentId)               | Fetch student data        |
+| LMS Adapter            | fetchCourses(studentId)                 | Retrieve enrolled courses |
+| Calendar Adapter       | fetchExamSchedule(courseList)           | Get exam dates            |
+| Notification Scheduler | scheduleNotification(student, schedule) | Queue notifications       |
+| Email Driver           | sendEmail(student, schedule)            | Deliver exam schedule     |
+
+    -UC2: Personalized Dashboard Access
+    -Use case diagram in file*
+| Component              | Method                               | Purpose                           |
+| ---------------------- | ------------------------------------ | --------------------------------- |
+| NLU / AI               | classifyIntent(text)                 | Determine user intent             |
+| Profile Service        | getUserProfile(studentId)            | Fetch student info                |
+| LMS Adapter            | fetchCourses(studentId)              | Retrieve courses                  |
+| Calendar Adapter       | fetchUpcomingEvents(studentId)       | Retrieve events                   |
+| Notification Subsystem | fetchPendingNotifications(studentId) | Get pending notifications         |
+| Dashboard Renderer     | renderDashboard(data)                | Consolidate and display dashboard |
+
+    -UC4: Announcements and Notifications
+    -Use case diagram in file*
+| Component              | Method                           | Purpose                    |
+| ---------------------- | -------------------------------- | -------------------------- |
+| NLU / AI               | classifyIntent(text)             | Determine broadcast action |
+| LMS Adapter            | fetchTargetUsers(courseId)       | Identify recipients        |
+| Notification Subsystem | scheduleAnnouncement(users, msg) | Queue announcements        |
+| Email Driver           | sendEmail(users, msg)            | Deliver announcement       |
+
 
 Step 7 — Analyze the Design Against the Iteration Goal
 
