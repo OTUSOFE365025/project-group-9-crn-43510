@@ -133,3 +133,14 @@ Step 7 — Analyze the Design Against the Iteration Goal
     - Compatibility with SSO
     - Flexibility for long-term updates
   The ADD Iteration 1 Process was succesfully and stably completed.
+
+----------------------------------------------------------------------------------------
+
+Interfaces (internal + external)
+
+|From	                  |To	                 |Type	            |Example                    |
+-------------------------------------------------------------------------------------------
+|UI Backend	            |API Gateway	       |REST	            |POST /gateway/chat         |
+|API Gateway   	        |NLU	               |Internal API	    |POST /nlu/interpret        |
+|Orchestrator	          |LMS Adapter	       |REST	            |GET /lms/courses/{userId}  |
+|Integration Service  	|Calendar System	   |External API	    |GET /calendar/events     |
