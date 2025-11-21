@@ -1,131 +1,301 @@
-ADD Iteration 2 — 7 ADD Steps
+# ADD Iteration 2 – FCAPS Management System
 
-This iteration follows the same ADD steps as Iteration 1:
+> Iteration 1 established the overall client–server structure and deployment (3-tier, rich Java client, service-based server).  
+> Iteration 2 refines the **domain model, modules, interfaces, and sequences** for the primary FCAPS functionality.
 
-1. Review Input
-2. Establish Iteration Goal by Selecting Drivers
-3. Choose System Elements to Decompose
-4. Choose Design Concepts to Satisfy Drivers
-5. Instantiate Subcomponents and Define Interfaces
-6. Sketch Views and Record Design Decisions
-7. Analyze the Design Against the Iteration Goal
+---
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 1. Drivers Considered in Iteration 2
 
-Step 1 — Review Input
+### Functional drivers
 
-  We revisited requirements with a focus on the subsystems affecting personalization, security, performance, and integration reliability. 
-  This included reviewing quality attributes, external system constraints, and use cases requiring fine-grained behavior.
+We now focus on **primary use cases**:
 
-Step 2 — Establish Iteration Goal by Selecting Drivers
+- **UC-1 – Monitor network status** (topology + current state)
+- **UC-2 – Detect fault** (react to traps from time servers)
+- **UC-7 – Collect performance data**
+- **UC-3 – Display event history** (read-only view)
+- **UC-10 – Log in / Log out**
+- **UC-11 – Manage users**
 
-  This iteration targets the four qualities below, and the goal is to refine the subsystems with the highest dependence on these qualities:
-  
-    - Security & privacy (user data, roles, SSO)
-    - Interoperability (external system dependencies)
-    - Modifiability (AI models & external APIs change frequently)
-    - Usability (personalized responses, reminders, multi-language support)
+### Quality attributes emphasized in this iteration
 
-Step 3 — Choose System Elements to Decompose
+- **QA-1 Trap processing performance** – 100% of traps must be processed and stored.
+- **QA-2 Modifiability** – new time-server protocols added with minimal changes.
+- **QA-4 Performance data collection** – collect metrics within 5 minutes while not blocking other operations.
+- **QA-6 Security / access control** – only authenticated users can access monitoring functions.
 
-  We selected four subsystems for refinement, of which all interact very closely with important quality attributes:
-  
-| Subsystem                          | Reason for Further Decomposition                                    |
-| ---------------------------------- | ------------------------------------------------------------------- |
-| **NLU / AI Subsystem**             | Must adapt quickly to new AI model versions + multilingual content. |
-| **Integration Subsystem**          | Reliability and fault tolerance are critical for external APIs.     |
-| **User Profile & Personalization** | Must maintain secure, isolated user data and preferences.           |
-| **Notification Subsystem**         | Scheduling and guaranteed delivery impact usability.                |
+### Concerns
 
+- **CRN-2** – Use Java technology stack (Rich client, Spring, Hibernate).
+- **CRN-3** – Structure the architecture so work can be allocated to individual developers.
+- **CRN-4** – Modules should be unit-testable where possible.
 
-Step 4 — Choose Design Concepts to Satisfy Drivers
+---
 
-  These concepts/choices directly carry out processes involving reliability, modifiability, and privacy needs.
-  
-    - Internal subcomponents inside each subsystem
-    - Caching for NLU speed
-    - Retry/circuit breaker patterns inside integrations allows for graceful handling of unreliable external APIs
-    - Scheduling + message queues for notifications allow for a more relevant user experiance
-    - Data isolation in profile service prevents cross user data leakage
-    - Versioned AI model deployment ensures that updates do not break the system and maintains modifiability
-  
-Step 5 — Instantiate Subcomponents & Define Interfaces
-  
-  5.1 NLU / AI Subsystem
-| Internal Component | Description                                     |
-| ------------------ | ----------------------------------------------- |
-| Intent Classifier  | Classifies user intent.                         |
-| Entity Extractor   | Extracts structured data (course codes, dates). |
-| Language Detector  | Determines input language.                      |
-| Model Server       | Hosts versioned AI models.                      |
-| Cache Layer        | Stores recent results to reduce inference time. |
+## 2. Element(s) to Refine
 
-  
-  5.2 Integration Subsystem
-| Component            | Description                      |
-| -------------------- | -------------------------------- |
-| LMS Adapter          | Reads/writes course data.        |
-| Registration Adapter | Manages enrollment queries.      |
-| Calendar Adapter     | Schedules events.                |
-| Email Adapter        | Sends emails.                    |
-| Error Handler        | Handles integration exceptions.  |
-| Retry Queue          | Queued retries for failed calls. |
+From Iteration 1 we had:
 
-  
-  5.3 User Profile & Personalization
-| Component              | Description                            |
-| ---------------------- | -------------------------------------- |
-| Profile Store          | Stores user account metadata.          |
-| Preferences Manager    | Language, notification prefs, etc.     |
-| History Manager        | ConversationHistory + AnalyticsRecord. |
-| Personalization Engine | Generates tailored responses.          |
+- Client and server layers (Presentation, Business Logic, Data, Cross-cutting).
+- High-level deployment (user workstation, application server, DB server, time servers).
 
-  
-  5.4 Notification Subsystem
-| Component               | Description                     |
-| ----------------------- | ------------------------------- |
-| Event Scheduler         | Triggers future notifications.  |
-| Message Queue           | Ensures delivery guarantees.    |
-| Announcement Dispatcher | Publishes course announcements. |
-| Email & Push Drivers    | Sends final notifications.      |
+In Iteration 2 we refine:
 
+1. The **domain model** (key entities and relationships).
+2. **Domain objects** that group responsibilities by use case.
+3. **Modules** in each layer that realise those domain objects.
+4. **Interfaces and sequences** for UC-1 and UC-2 (main flows).
 
-Step 6 — Sketch Views & Record Design Decisions
+---
 
-  Subsystem Diagrams to Include
-    - NLU Internal
-    - Integrations Internal
-    - Profile System
-    - Notification System
-    - Domain Model
-  
-  Entities:
-    - User
-    - Course
-    - Event
-    - Announcement
-    - ConversationHistory
-    - Notification
-    - Preferences
-    - AnalyticsRecord
-  
-  Relationships:
-    - User ↔ Courses (many-to-many)
-    - User → ConversationHistory (one-to-many)
-    - Course → Announcements (one-to-many)
-    - User → Notifications (one-to-many)
+## 3. Design Concepts Chosen
 
-Step 7 — Analyze the Design Against the Iteration Goal
+| Decision | Rationale |
+| --- | --- |
+| Introduce an explicit **Domain Model** | Keeps entities and relationships central, avoids scattered ad-hoc data structures. |
+| Create **Domain Objects** per functional area (NetworkStatusMonitoring, FaultDetection, etc.) | Groups responsibilities in a way that directly traces to use cases and supports work allocation (CRN-3). |
+| Implement layers with **Spring** (IoC) | Spring wiring allows dependencies to be injected → modules are easier to unit test (CRN-4) and replace, improving modifiability (QA-2). |
+| Use **Hibernate** for DB access | Removes SQL from business logic, centralizes persistence concerns, and makes schema evolution simpler. |
+| Encapsulate time-server protocol logic in a **TimeServerConnector** module | Changing or adding protocols hits only this module, protecting the rest of the system (QA-2). |
+| Use asynchronous event handling for traps (observer / listener style) | Allows traps to be processed without blocking the UI or other server tasks, supporting QA-1 and QA-4. |
 
-  This refinement improved:
-| Design Decision                                      | Intended Quality Attribute(s)   | Explanation                                                                                                                                          |
-| ---------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Data isolation in Profile Service                    | Security, Privacy               | Clear boundaries between profile data and other services reduce risk of unauthorized access. Enhances compliance and prevents cross-service leakage. |
-| Retry Queue + Circuit Breaker in Integrations        | Interoperability, Reliability   | Integration subsystem now gracefully handles LMS/Email outages without user facing failure; guaranteed retry ensures reliable message flow.          |
-| Versioned Model Server for AI                        | Modifiability                   | Enables upgrades, A/B testing, and rollback of AI models without affecting upstream flow. Ensures stable system behavior despite ML updates.         |
-| Caching Layer in NLU                                 | Performance, Usability          | Reduces latency for repeated queries; however, cache invalidation and multilingual caching strategies still need refinement.           |
-| Strengthened Preferences & Personalization Engine    | Usability                       | System now tailors answers, reminders, and language selection based on user profile and conversation history. Improves task completion and clarity.  |
-| Scheduler + Message Queue for Notifications          | Usability, Reliability          | Ensures timed notifications are sent even under system load; queue decouples services and ensures delivery consistency.                              |
-| Improved Integration Adapters (LMS, Calendar, Email) | Interoperability, Modifiability | Adapters allow easier API updates                                 |
+---
 
-  This ADD Iteration 2 process we completed was successful with stability and efficiency.
+## 4. Domain Model (Conceptual View)
+
+Key entities:
+
+- **Region**
+  - Represents a logical or physical grouping of time servers.
+  - May be part of a hierarchy (Region contains child Regions).
+- **TimeServer**
+  - Attributes: `id`, `name`, `ipAddress`, `model`, `status`.
+  - Belongs to one Region.
+- **Configuration**
+  - Holds configuration parameters for a TimeServer.
+- **Event**
+  - Attributes: `id`, `timestamp`, `severity`, `type`, `payload`.
+  - Linked to a TimeServer; represents faults or informational events.
+- **PerformanceData**
+  - Attributes: `id`, `timestamp`, `offset`, `delay`, `jitter`, etc.
+  - Linked to a TimeServer.
+- **User**
+  - Attributes: `username`, `passwordHash`, `role`.
+  - Linked to 0..* acknowledged Events.
+
+(This is the class diagram you show in your **Domain Model** PNG.)
+
+---
+
+## 5. Domain Objects & Responsibilities
+
+We group responsibilities into **Domain Objects**, each mapped to one or more use cases.
+
+| Domain Object | Main responsibilities | Related Use Cases |
+| --- | --- | --- |
+| **NetworkStatusMonitoring** | Maintain and expose current topology and state of regions / time servers for UI. | UC-1 |
+| **FaultDetection** | Process traps, convert them to Events, update server states. | UC-2 |
+| **EventHistory** | Store and query events; support filtering by time / severity / server. | UC-3 |
+| **TimeServerManagement** | Add / remove / list time servers. | UC-4 |
+| **TimeServerConfiguration** | Manage configuration changes and rollback. | UC-5, UC-6 |
+| **PerformanceAndDataCollection** | Schedule and execute periodic performance data collection. | UC-7 |
+| **InformationDisplay** | Provide detailed views of a time server or region. | UC-8 |
+| **PerformanceVisualization** | Aggregate and format performance data for graphs. | UC-9 |
+| **SystemAccess** | Login, logout, session handling. | UC-10 |
+| **UserManagement** | CRUD operations on users and roles. | UC-11 |
+
+Each domain object is implemented by one or more modules across the client and server layers.
+
+---
+
+## 6. Module View for Primary Use Cases
+
+Below is the concrete module breakdown (corresponds to your **Iteration2 module diagram**).
+
+### 6.1 Client-side modules
+
+- **Presentation CS**
+  - `NetworkStatusMonitoringView`
+  - `EventHistoryView`
+  - `LoginView`
+- **Business Logic CS**
+  - `NetworkStatusMonitoringController`
+  - `EventHistoryController`
+  - `AuthenticationController`
+- **Data CS**
+  - `RequestManager`
+
+### 6.2 Server-side modules
+
+- **Services SS**
+  - `RequestService` (generic facade for all client requests)
+- **Business Logic SS**
+  - `TopologyController`
+  - `TimeServerEventsController`
+  - `DataCollectionController`
+  - `UserController`
+- **Data SS**
+  - `RegionDataMapper`
+  - `TimeServerDataMapper`
+  - `EventDataMapper`
+  - `PerformanceDataMapper`
+  - `UserDataMapper`
+  - `TimeServerConnector` (talks to physical time servers)
+- **Cross-cutting**
+  - `SecurityManager`
+  - `Logger`
+
+### 6.3 Responsibilities Table
+
+| Module | Responsibility |
+| --- | --- |
+| `NetworkStatusMonitoringView` | Render topology and color-coded status of time servers / regions. |
+| `EventHistoryView` | Show table of past events, filters, and details. |
+| `LoginView` | Capture credentials and show authentication errors. |
+| `NetworkStatusMonitoringController` | Coordinate topology loading, refresh, and error handling for UC-1. |
+| `EventHistoryController` | Request and present filtered event data for UC-3. |
+| `AuthenticationController` | Call login/logout services and manage client session state. |
+| `RequestManager` | Serialize requests to server, manage transport / error handling. |
+| `RequestService` | Entry point for all client calls; routes each request to specific controller. |
+| `TopologyController` | Handles topology queries; composes `Region` and `TimeServer` data. |
+| `TimeServerEventsController` | Handles new events/traps, maps them to domain objects, and persists them. |
+| `DataCollectionController` | Schedules and executes performance data polls (UC-7). |
+| `UserController` | Handles login, logout, and user management (UC-10, UC-11). |
+| `RegionDataMapper` | CRUD for Region entities in the DB. |
+| `TimeServerDataMapper` | CRUD for TimeServer entities. |
+| `EventDataMapper` | CRUD for Event entities. |
+| `PerformanceDataMapper` | Persist and query performance metrics. |
+| `UserDataMapper` | CRUD for user accounts and roles. |
+| `TimeServerConnector` | Encapsulates SNMP (and future protocols); receives traps and queries performance/config. |
+| `SecurityManager` | Performs authorization checks on service methods. |
+| `Logger` | Centralized logging for auditing and debugging. |
+
+---
+
+## 7. Sequence Diagrams & Interfaces
+
+In the repo, the PNG diagrams show the flows.  
+Here we describe them and list the interfaces used.
+
+### 7.1 UC-1 – Monitor Network Status
+
+**Scenario:** Technician opens the client, logs in, and views current network topology.
+
+**Sequence (text version):**
+
+1. User starts the client and authenticates through `LoginView` → `AuthenticationController` → `UserController.login()`.
+2. `NetworkStatusMonitoringController.initialize()` is called when the technician opens the topology view.
+3. Controller asks the server for the root region:
+   - `NetworkStatusMonitoringController.getRootRegion()`
+   - calls `RequestManager.requestTopology()`
+   - which invokes `RequestService.sendRequest(request)`
+   - which delegates to `TopologyController.requestTopology()`.
+4. `TopologyController` queries:
+   - `RegionDataMapper.retrieve(rootId)`
+   - `TimeServerDataMapper.listByRegion(rootId)`
+5. The assembled `Region` tree + associated `TimeServer` objects are returned back to the client.
+6. `NetworkStatusMonitoringController.populateView()` updates `NetworkStatusMonitoringView` to draw the topology.
+
+**Interface / method table (UC-1)**
+
+| Module | Method | Description |
+| --- | --- | --- |
+| `AuthenticationController` | `boolean login(username, password)` | Delegates to `UserController` to validate credentials. |
+| `NetworkStatusMonitoringController` | `boolean initialize()` | Prepares topology view and triggers initial load. |
+|  | `Region getRootRegion()` | Requests root region topology from server. |
+| `RequestManager` | `Region requestTopology()` | Sends a topology request to `RequestService`. |
+| `RequestService` | `Response sendRequest(Request req)` | Generic endpoint for all client requests. |
+| `TopologyController` | `Region requestTopology()` | Builds and returns the root region with its children and servers. |
+| `RegionDataMapper` | `Region retrieve(int id)` | Loads region and child relations from DB. |
+| `TimeServerDataMapper` | `List<TimeServer> listByRegion(int regionId)` | Retrieves all time servers in a region. |
+
+**Quality attributes addressed**
+
+- Performance: Only region tree and required server data are loaded; further detail can be lazy-loaded.
+- Modifiability: New views can reuse `RequestService` + `TopologyController` without changing transport/DB code.
+
+---
+
+### 7.2 UC-2 – Detect Fault (Trap Handling)
+
+**Scenario:** A time server raises an SNMP trap (fault). The system records it and updates the topology views.
+
+**Sequence (text version):**
+
+1. `TimeServer` sends a trap to the application server.
+2. `TimeServerConnector` receives the trap and converts it into an internal `Event`.
+3. `TimeServerConnector` invokes `TimeServerEventsController.eventReceived(evt)`.
+4. `TimeServerEventsController`:
+   - Calls `TimeServerDataMapper.retrieve(evt.timeServerId)` to load the affected server.
+   - Updates server status and calls `TimeServerDataMapper.update(ts)`.
+   - Persists the event via `EventDataMapper.insert(evt)`.
+   - Notifies `TopologyController.publish(evt)` so subscribed clients can refresh their views.
+5. `TopologyController` publishes an update (e.g., through a message bus or server push) to `NetworkStatusMonitoringController` on each active client.
+6. Each client updates its `NetworkStatusMonitoringView` to mark the affected server/region.
+
+**Interface / method table (UC-2)**
+
+| Module | Method | Description |
+| --- | --- | --- |
+| `TimeServerConnector` | `boolean addEventListener(EventListener el)` | Registers business logic to receive trap events. |
+|  | `void onTrapReceived(rawTrap)` | Parses trap and triggers `eventReceived(Event)`. |
+| `TimeServerEventsController` | `boolean eventReceived(Event evt)` | Called whenever a new event occurs. |
+| `TimeServerDataMapper` | `TimeServer retrieve(int id)` | Fetches the affected server. |
+|  | `boolean update(TimeServer ts)` | Persists changed status of the server. |
+| `EventDataMapper` | `boolean insert(Event evt)` | Stores the new event in the DB. |
+| `TopologyController` | `void publish(Event evt)` | Notifies interested clients of status/topology changes. |
+| `NetworkStatusMonitoringController` | `void handleEvent(Event evt)` | Updates local model and refreshes the view. |
+
+**Quality attributes addressed**
+
+- **QA-1 Trap performance** – Dedicated `TimeServerConnector` and controller allow asynchronous processing; DB writes and UI notifications can be tuned separately.
+- **QA-2 Modifiability** – New protocols affect only `TimeServerConnector` and perhaps parsing, not the rest of the flow.
+
+---
+
+## 8. Quality Attribute Realization in Iteration 2
+
+- **Performance (QA-1, QA-4)**
+  - Trap handling pipeline (`TimeServerConnector` → `TimeServerEventsController` → `EventDataMapper`) is decoupled from UI and can be executed asynchronously.
+  - Data collection is centralized in `DataCollectionController`, which can batch and schedule polls to meet the 5-minute requirement.
+- **Modifiability (QA-2)**
+  - `TimeServerConnector` hides protocol details.
+  - Use of Spring IoC means controllers and mappers can be replaced or extended with minimal change.
+- **Security (QA-6)**
+  - `SystemAccess` (Login/Logout) plus `SecurityManager` enforce authenticated access to `RequestService` operations.
+
+---
+
+## 9. Iteration 2 Design Decisions Table
+
+| Decision | Alternatives | Justification |
+| --- | --- | --- |
+| Use `RequestService` as a single facade for client requests | Multiple service endpoints directly exposed | Simplifies client code and routing, central location for security and logging, easier to evolve. |
+| Introduce `TimeServerEventsController` as separate from `TopologyController` | Handle events directly in `TopologyController` | Separates concerns: topology queries vs. real-time event handling. Supports independent scaling/testing. |
+| Use mapper classes (`*DataMapper`) instead of embedding queries in controllers | Controllers execute SQL directly | Keeps persistence concerns isolated, eases schema changes and improves testability. |
+| Event publishing via `TopologyController.publish()` | Clients poll for status | Push model reacts faster to faults and reduces unnecessary polling load. |
+| Central `DataCollectionController` for performance metrics | Each module collects its own data | Single point for scheduling and throttling, making it easier to respect timing constraints. |
+
+---
+
+## 10. Iteration 2 Analysis & Progress (Kanban View)
+
+| Driver | Status after Iteration 2 | Notes |
+| --- | --- | --- |
+| UC-1 Monitor network status | **Structurally complete** | Domain model, modules, and UC-1 sequence defined. |
+| UC-2 Detect fault | **Structurally complete** | Trap pipeline and interfaces established. |
+| UC-3 Display event history | **Structurally complete** | `EventHistoryView`, controller, and `EventDataMapper` identified. |
+| UC-7 Collect performance data | **Structurally addressed** | `DataCollectionController` + `PerformanceDataMapper` defined; detailed scheduling left for later iteration. |
+| UC-10 / UC-11 Access & users | **Structurally addressed** | `AuthenticationController`, `UserController`, `UserDataMapper`, `SecurityManager` defined. |
+| QA-1 Trap performance | **Partially satisfied** | Dedicated pipeline; concrete throughput limits and tuning TBD. |
+| QA-2 Modifiability (protocols) | **Partially satisfied** | Protocol logic centralized in `TimeServerConnector`; further work for plugin mechanism later. |
+| QA-4 Performance data collection | **Partially satisfied** | Control point (`DataCollectionController`) exists; need stress testing and optimization. |
+| QA-6 Security | **Partially satisfied** | Login + role-based checks planned; detailed authorization rules to be completed. |
+| CRN-2 Technology alignment | **Satisfied** | Java + Spring + Hibernate used throughout design. |
+| CRN-3 Work allocation | **Satisfied** | Clear module boundaries allow tasks to be assigned to team members. |
+| CRN-4 Testability | **Partially satisfied** | Most controllers/mappers are unit-testable; UI modules may need manual / integration tests. |
+
+---
+
+_End of ADD Iteration 2._
