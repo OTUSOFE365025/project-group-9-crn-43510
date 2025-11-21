@@ -46,3 +46,69 @@ Step 4 — Choose Design Concepts to Satisfy Drivers
     - Data isolation in profile service
     - Versioned AI model deployment
   
+Step 5 — Instantiate Subcomponents & Define Interfaces
+  
+  5.1 NLU / AI Subsystem
+      - Internal Components
+      - Intent Classifier
+      - Entity Extractor
+      - Language Detector
+      - Model Server
+      - Cache Layer
+  
+  5.2 Integration Subsystem
+    - Internal Components
+    - LMS Adapter
+    - Registration Adapter
+    - Calendar Adapter
+    - Email Adapter
+    - Error Handler
+    - Retry Queue
+  
+  5.3 User Profile & Personalization
+    - Internal Components
+    - Profile Store
+    - Preferences Manager
+    - History Manager
+    - Personalization Engine
+  
+  5.4 Notification Subsystem
+    - Internal Components
+    - Event Scheduler
+    - Message Queue
+    - Announcement Dispatcher
+    - Email & Push Drivers
+
+Step 6 — Sketch Views & Record Design Decisions
+
+  Subsystem Diagrams to Include
+    - NLU Internal
+    - Integrations Internal
+    - Profile System
+    - Notification System
+    - Domain Model
+  
+  Entities:
+    - User
+    - Course
+    - Event
+    - Announcement
+    - ConversationHistory
+    - Notification
+    - Preferences
+    - AnalyticsRecord
+  
+  Relationships:
+    - User ↔ Courses (many-to-many)
+    - User → ConversationHistory (one-to-many)
+    - Course → Announcements (one-to-many)
+    - User → Notifications (one-to-many)
+
+Step 7 — Analyze the Design Against the Iteration Goal
+
+  This refinement improved:
+    - Security: clean boundaries around personal data
+    - Modifiability: AI and integrations can be updated easily
+    - Resilience: retry logic helps when external systems fail
+    - User experience: personalization and reminders improve usability
+  This ADD Iteration 2 process we completed was successful with stability and efficiency.
