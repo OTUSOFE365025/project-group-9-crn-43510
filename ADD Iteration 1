@@ -61,15 +61,15 @@ ADD Process Iteration Steps:
 
 4. High-Level Components Identified
 
-These major components make up the initial system structure:
-  - API Gateway – manages incoming requests, routing, authentication, and throttling
-  - Conversational UI (Web/Mobile/Voice) – handles the user interface
-  - NLU / AI Interpreter – performs intent recognition, entity extraction, and language detection
-  - Response Orchestrator – decides which services to call based on the AI interpretation
-  - User Profile Service – stores preferences, history, and personalization data
-  - Integration Services – individual connectors for LMS, registration, calendars, email
-  - Notification Service – manages reminders, announcements, and scheduled tasks
-  - SSO Authentication Layer – connects to university SSO
-  - Data Storage Layer – combines SQL and NoSQL storage
-  - Monitoring / Logging – tracks performance, errors, and general usage statistics
-Each component has a distinct responsibility that makes the system easier to maintain and evolve.
+  These major components make up the initial system structure:
+    - API Gateway – manages incoming requests, routing, authentication, and throttling
+    - Conversational UI (Web/Mobile/Voice) – handles the user interface
+    - NLU / AI Interpreter – performs intent recognition, entity extraction, and language detection
+    - Response Orchestrator – decides which services to call based on the AI interpretation
+    - User Profile Service – stores preferences, history, and personalization data
+    - Integration Services – individual connectors for LMS, registration, calendars, email
+    - Notification Service – manages reminders, announcements, and scheduled tasks
+    - SSO Authentication Layer – connects to university SSO
+    - Data Storage Layer – combines SQL and NoSQL storage
+    - Monitoring / Logging – tracks performance, errors, and general usage statistics
+  Each component has a distinct responsibility that makes the system easier to maintain and evolve.
