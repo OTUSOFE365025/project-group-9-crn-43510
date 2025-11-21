@@ -8,7 +8,7 @@ ADD Process Iteration Steps:
 5. Instantiate architectural elements, allocate responsibilities and define interfaces 
 6. Sketch views and record design decisions 
 7. Perform analysis of current design and review iteration goal and design objectives 
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 1. Introduction
 
@@ -17,82 +17,120 @@ ADD Process Iteration Steps:
   At this stage, we are not trying to perfect details or refine interaction patterns. Instead, we are laying out the major components, choosing the architectural style, 
   and showing how everything fits together at a high level.
 
-2. Key Drivers Considered in Iteration 1
-  
-  2.1 Functional Drivers
+Step 1 — Review Input
 
-    These came from our Deliverable 1 analysis and represent the most important capabilities AIDAP must support early in the design.
+  We began by reviewing Deliverable 1, which includes AIDAP’s use cases, quality attributes, and constraints. 
+  This helped us understand what the system must accomplish and what limits we must work within. The main themes that emerged were:
+
+    - Users need conversational access to many academic systems
+    - The assistant must work quickly and reliably
+    - There are strict security/privacy expectations
+    - The platform needs to integrate with multiple existing systems (LMS, registration, calendars, email)
+    - The university requires cloud deployment and SSO authentication
+    - This early review framed the rest of the architectural work.
+
+Step 2 — Establish Iteration Goal by Selecting Drivers
+
+  Functional Drivers
+  
+    - R1 (Conversational access):	Core purpose of the platform.
+    - R3 (Integrations):	Most questions depend on LMS, registration, or calendar data.
+    - R5 (AI interpretation):	Defines the complexity of backend AI/NLP.
+    - R6 (Combine live + stored data):	Affects orchestration and data-access design.
+  
+  Quality Attribute Drivers
+  
+    - Performance (~2s):	Users expect a natural, chat-like system.
+    - Availability (99.5%):	Must function reliably during busy periods.
+    - Scalability (5,000+ users):	Essential for registration/exam seasons.
+    - Security/Privacy:	Sensitive academic data must be protected.
+    - Interoperability:	External systems use inconsistent APIs.
+  
+  Constraints
+  
+    - Cloud deployment:	Shapes how components run.
+    - SSO support:	Requires authentication components.
+    - Use standard APIs:	Affects integration-layer structure.
+    - Secure data handling:	Affects storage and access boundaries.
+
+These drivers guided the architecture’s structure and priorities.
+
+Step 3 — Choose System Elements to Decompose
+
+  For the first iteration, we decomposed the system in a very general and wide-range method. The goal was to identify major components early so we can refine them later. 
+  The main elements broken down were:
+  
+  - Conversational/UI layer
+  - NLU/AI layer
+  - Response orchestration layer
+  - Integration layer
+  - User profile/personalization layer
+  - Notification services
+  - Authentication/supporting infrastructure
+  - Data storage
+  
+  This step showed us the initial “shape” of the system.
+
+Step 4 — Choose Design Concepts to Satisfy Drivers
+
+  To support the drivers chosen earlier, we selected several architectural concepts:
+  
+    - Microservices architecture:
+        Each major subsystem becomes an independently scalable service.
+    - API Gateway:
+        Centralized routing, SSO validation, and rate limiting.
+    - Event-driven messaging:
+        Helps handle scheduled reminders and long-running tasks asynchronously.
+    - Cloud-native deployment:
+        Allows auto-scaling, load balancing, and managed storage.
+    - Separation of concerns:
+        Keeps AI logic independent from integrations and data storage.
     
-    - R1: Conversational access to institutional data	This is the primary purpose of the platform.
-    - R3: Integration with LMS, registration, calendars	Most meaningful queries depend on these systems.
-    - R5: Use AI/NLP to interpret queries	Determines the complexity of the backend and structure of the AI layer.
-    - R6: Combine stored data and live data	Impacts how services coordinate to answer questions accurately.
+  These concepts ensure the architecture can scale, stay secure, and evolve over time.
 
-  2.2 Quality Attributes
+Step 5 — Instantiate Architectural Elements & Assign Responsibilities
 
-    These strongly influence the architecture because they determine how scalable, secure, and reliable the system must be.
-    
-    - Performance (respond around 2 seconds): since students would expect quick, conversational responses.
-    - Availability (approximately 99.5% uptime):	The assistant must be dependable, especially during busy periods.
-    - Scalability: (around 5,000+ concurrent users):	Registration and exam periods create high usage of data and traffic.
-    - Security/Privacy:	AIDAP handles personal information such as grades, schedules, and analytics.
-    - Interoperability:	University systems use various APIs and formats, so integration must be flexible.
+  - API Gateway: Handles authentication, routing, and request throttling.
+  - Conversational UI: Responsible for user-facing functionality.
+  - NLU / AI Service: Handles intent recognition, entity extraction, and language processing.
+  - Response Orchestrator: Decides which services to call.
+  - User Profile Service: Stores preferences, conversation history, and personalization.
+  - Integration Services: Connect to LMS, registration, calendar, email.
+  - Notification Service: Manages reminders and announcements.
+  - SSO Authentication Layer: Processes institutional login.
+  - Data Storage Layer: SQL + NoSQL.
+  - Monitoring/Logging: Tracks performance and system health.
+Each component has a narrow responsibility to simplify maintenance and scaling.
 
-  2.3 Constraints
-    - Must run in the cloud:	Influences deployment and scaling decisions.
-    - Must support SSO:	Requires a dedicated authentication mechanism.
-    - Must use standard APIs:	Shapes integration module design.
-    - Must store user data securely:	Impacts both data storage and access controls.
+Step 6 — Sketch Views & Record Design Decisions
 
+  High-Level Architecture Diagram 
+  *Image in File
 
-3. Reference Architecture Choice
+  Deployment Diagram
+  *Image in File
 
-  "Microservices with an API Gateway, supported by cloud-native services and event-driven messaging."
+  Deployment View
 
-  This was chosen microservices because the AIDAP system pulls together many different responsibilities—AI, notifications, profiles, 
-  integrations—and each one has its own scaling and reliability needs. Microservices allow the more demanding services, especially the AI/NLU ones, 
-  to be scaled independently without wasting resources on lighter services.
+    - Cloud environment with load-balanced API gateway
+    - Service cluster running microservices with auto-scaling
+    - SQL + NoSQL storage cluster
+    - External connectors to LMS, registration, calendar, and email systems
+    - AI/NLU and orchestration services horizontally scalable
   
-  An API Gateway fits naturally into this style because it gives us: a single point for SSO validation, unified access control, consistent routing, 
-  and an easier way for clients to interact with the backend.
-  Event-driven messaging helps with features like notifications, scheduled reminders, and long-running tasks. Instead of clogging up the request-response flow, 
-  these can be handled asynchronously.
-  Overall, this architectural choice provides flexibility, room for future expansion, and good stability during peak usage periods.
-
-4. High-Level Components Identified
-
-  These major components make up the initial system structure:
-    - API Gateway – manages incoming requests, routing, authentication, and throttling
-    - Conversational UI (Web/Mobile/Voice) – handles the user interface
-    - NLU / AI Interpreter – performs intent recognition, entity extraction, and language detection
-    - Response Orchestrator – decides which services to call based on the AI interpretation
-    - User Profile Service – stores preferences, history, and personalization data
-    - Integration Services – individual connectors for LMS, registration, calendars, email
-    - Notification Service – manages reminders, announcements, and scheduled tasks
-    - SSO Authentication Layer – connects to university SSO
-    - Data Storage Layer – combines SQL and NoSQL storage
-    - Monitoring / Logging – tracks performance, errors, and general usage statistics
-  Each component has a distinct responsibility that makes the system easier to maintain and evolve.
-
-5. High Level Architecture Diagram for AIDAP
-
-    Image in file.
-
-6. Deployment Diagram/VIew for Iteration 1
-
-  *Diagram in File
-
-  How the system is distributed
-
-    - Front-end clients: web browsers, mobile apps, or voice interfaces
-    - API Gateway: hosted in the cloud with load balancing
-    - Service cluster: where all microservices run, each with auto-scaling as needed
-    - Databases: combination of SQL (structured) and NoSQL (documents, chat logs)
-    - External systems: LMS, Registration, Calendar, Email servers
+  Key Decisions
   
-  Deployment considerations
-  
-    - The NLU and Orchestrator must scale horizontally
-    - Notifications benefit from message queues
-    - Storage is intentionally split into structured and unstructured layers
-    - Monitoring/logging should run alongside the microservices for visibility
+    - Microservices chosen for modularity and scaling
+    - API gateway chosen for unified access control
+    - Adapters chosen to handle inconsistent external APIs
+    - Mix of SQL + NoSQL chosen for flexibility
+
+Step 7 — Analyze the Design Against the Iteration Goal
+
+  The architecture provides:
+    - Sufficient scalability
+    - Strong availability characteristics
+    - Clean modular boundaries
+    - Compatibility with SSO
+    - Flexibility for long-term updates
+  The ADD Iteration 1 Process was succesfully and stably completed.
