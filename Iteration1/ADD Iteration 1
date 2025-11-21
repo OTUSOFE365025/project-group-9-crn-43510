@@ -1,0 +1,146 @@
+Attribute-Driven Design (ADD) is a step-by-step way to design an architecture starting from using requirements and quality attributes, 
+instead of directly start with low-level code or classes. In this tutorial assignment we are completing 1 iteration of the ADD Process for the cash register system. 
+ADD Process Iteration Steps: 
+1. Review Input: Examine the use cases, quality attributes, and constraints for this iteration. 
+2. Establish iteration goal by selecting drivers 
+3. Choose one or more elements of the system to decompose 
+4. Choose one or more design concepts that satisfy the selected drivers 
+5. Instantiate architectural elements, allocate responsibilities and define interfaces 
+6. Sketch views and record design decisions 
+7. Perform analysis of current design and review iteration goal and design objectives 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Introduction
+
+  The AI-Powered Digital Assistant Platform's (AIDAP) general structure will be shaped during the first iteration.  
+  Here, all we want to do is figure out what the system needs to support and design an architectural path that can actually meet those needs. 
+  We are not currently attempting to improve interaction patterns or fine-tune specifics. Instead, we decided to outline the main elements, selecting the architectural style, 
+  and providing a high-level overview of how everything works together.
+
+Step 1 — Review Input
+
+  We started by going over Deliverable 1, which contains the constraints, quality attributes, and use cases of AIDAP. 
+  This made it easier for us to understand the goals of the system and the constraints we must adhere to. The main concepts that we found were:
+    - Users would need conversational access to various academic systems
+    - The assistant should work fast and be dependable
+    - There are quite strict security/privacy expectations
+    - The platform needs to integrate with several currently existing systems (LMS, registration, calendars, email)
+    - The university requires cloud deployment and SSO authentication
+  This reviewing of the input well structured for the rest of the architectural work.
+
+Step 2 — Establish Iteration Goal by Selecting Drivers
+
+  Functional Drivers
+  
+    - R1 (Conversational access):	the core purpose of the platform.
+    - R3 (Integrations):	Most questions will depend on LMS, registration, or calendar data.
+    - R5 (AI interpretation):	this will define the complexity of backend AI/NLP.
+    - R6 (Combine both current/active & stored data):	will affect orchestration and data-access design.
+  
+  Quality Attribute Drivers
+  
+    - Performance (~2s):	Users will expect a more natural, chat-like system that isnt too stiff and robotic sounding.
+    - Availability (99.5%):	Must function stably and be reliable during busy periods of the system such as registration and exam periods.
+    - Scalability (5,000+ users):	Essential for registration/exam seasons.
+    - Security/Privacy:	Sensitive and private academic data of students and professors and other staff must be protected.
+    - Interoperability:	External systems use inconsistent APIs.
+  
+  Constraints
+  
+    - Cloud deployment:	Shapes how components run based on infrastructure location, who manages the components/infrastructure, and their functionalities.
+    - SSO support:	Requires authentication components.
+    - Use standard APIs:	Affects integration-layer structure.
+    - Secure data handling:	Affects storage and access boundaries.
+
+These drivers guided the architecture’s structure and priorities.
+
+Step 3 — Choose System Elements to Decompose
+
+  For the first iteration, we decomposed the system in a very general and wide-range method. The goal was to identify major components early in the process so we can refine them later. 
+  The main elements broken down here are:
+  
+  - Conversational/UI layer
+  - NLU/AI layer
+  - Response orchestration layer
+  - Integration layer
+  - User profile/personalization layer
+  - Notification services
+  - Authentication/supporting infrastructure
+  - Data storage
+  
+  This step showed us the initial “shape” and structure of the AIDAP system.
+
+Step 4 — Choose Design Concepts to Satisfy Drivers
+
+  To support the drivers chosen earlier, we selected several architectural concepts:
+  
+    - Microservices architecture:
+        Each major subsystem becomes an independently scalable service.
+    - API Gateway:
+        Centralized routing, SSO validation, and rate limiting.
+    - Event-driven messaging:
+        Helps handle scheduled reminders and long-running tasks asynchronously.
+    - Cloud-native deployment:
+        Allows auto-scaling, load balancing, and managed storage.
+    - Separation of concerns:
+        Keeps AI logic independent from integrations and data storage.
+    
+  These concepts ensure the architecture can scale, stay secure, and evolve over time.
+
+Step 5 — Instantiate Architectural Elements & Assign Responsibilities
+
+  - API Gateway: Handles authentication, routing, and request throttling.
+  - Conversational UI: Responsible for user-facing functionality.
+  - NLU / AI Service: Handles intent recognition, entity extraction, and language processing.
+  - Response Orchestrator: Decides which services to call.
+  - User Profile Service: Stores preferences, conversation history, and personalization.
+  - Integration Services: Connect to LMS, registration, calendar, email.
+  - Notification Service: Manages reminders and announcements.
+  - SSO Authentication Layer: Processes institutional login.
+  - Data Storage Layer: SQL + NoSQL.
+  - Monitoring/Logging: Tracks performance and system health.
+Each component has a narrow responsibility to simplify maintenance and scaling.
+
+Step 6 — Sketch Views & Record Design Decisions
+
+  High-Level Architecture Diagram 
+  *Image in File
+
+  Deployment Diagram
+  *Image in File
+
+  Deployment View
+
+    - Cloud environment with load-balanced API gateway
+    - Service cluster running microservices with auto-scaling
+    - SQL + NoSQL storage cluster
+    - External connectors to LMS, registration, calendar, and email systems
+    - AI/NLU and orchestration services horizontally scalable
+  
+  Key Decisions
+  
+    - Microservices chosen for modularity and scaling
+    - API gateway chosen for unified access control
+    - Adapters chosen to handle inconsistent external APIs
+    - Mix of SQL + NoSQL chosen for flexibility
+
+Step 7 — Analyze the Design Against the Iteration Goal
+
+  The architecture provides:
+    - Sufficient scalability
+    - Strong availability characteristics
+    - Clean modular boundaries
+    - Compatibility with SSO
+    - Flexibility for long-term updates
+  The ADD Iteration 1 Process was succesfully and stably completed.
+
+----------------------------------------------------------------------------------------
+
+Interfaces (internal + external)
+
+|From	                  |To	                 |Type	            |Example                    |
+-------------------------------------------------------------------------------------------
+|UI Backend	            |API Gateway	       |REST	            |POST /gateway/chat         |
+|API Gateway   	        |NLU	               |Internal API	    |POST /nlu/interpret        |
+|Orchestrator	          |LMS Adapter	       |REST	            |GET /lms/courses/{userId}  |
+|Integration Service  	|Calendar System	   |External API	    |GET /calendar/events     |
