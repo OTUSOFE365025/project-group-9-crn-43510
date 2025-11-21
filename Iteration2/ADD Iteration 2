@@ -30,10 +30,13 @@ Step 3 — Choose System Elements to Decompose
 
   We selected four subsystems for refinement, of which all interact very closely with important quality attributes:
   
-    - NLU / AI subsystem
-    - Integration subsystem
-    - User profile & personalization subsystem
-    - Notification subsystem
+| Subsystem                          | Reason for Further Decomposition                                    |
+| ---------------------------------- | ------------------------------------------------------------------- |
+| **NLU / AI Subsystem**             | Must adapt quickly to new AI model versions + multilingual content. |
+| **Integration Subsystem**          | Reliability and fault tolerance are critical for external APIs.     |
+| **User Profile & Personalization** | Must maintain secure, isolated user data and preferences.           |
+| **Notification Subsystem**         | Scheduling and guaranteed delivery impact usability.                |
+
 
 Step 4 — Choose Design Concepts to Satisfy Drivers
 
@@ -41,43 +44,51 @@ Step 4 — Choose Design Concepts to Satisfy Drivers
   
     - Internal subcomponents inside each subsystem
     - Caching for NLU speed
-    - Retry/circuit breaker patterns inside integrations
-    - Scheduling + message queues for notifications
-    - Data isolation in profile service
-    - Versioned AI model deployment
+    - Retry/circuit breaker patterns inside integrations allows for graceful handling of unreliable external APIs
+    - Scheduling + message queues for notifications allow for a more relevant user experiance
+    - Data isolation in profile service prevents cross user data leakage
+    - Versioned AI model deployment ensures that updates do not break the system and maintains modifiability
   
 Step 5 — Instantiate Subcomponents & Define Interfaces
   
   5.1 NLU / AI Subsystem
-      - Internal Components
-      - Intent Classifier
-      - Entity Extractor
-      - Language Detector
-      - Model Server
-      - Cache Layer
+| Internal Component | Description                                     |
+| ------------------ | ----------------------------------------------- |
+| Intent Classifier  | Classifies user intent.                         |
+| Entity Extractor   | Extracts structured data (course codes, dates). |
+| Language Detector  | Determines input language.                      |
+| Model Server       | Hosts versioned AI models.                      |
+| Cache Layer        | Stores recent results to reduce inference time. |
+
   
   5.2 Integration Subsystem
-    - Internal Components
-    - LMS Adapter
-    - Registration Adapter
-    - Calendar Adapter
-    - Email Adapter
-    - Error Handler
-    - Retry Queue
+| Component            | Description                      |
+| -------------------- | -------------------------------- |
+| LMS Adapter          | Reads/writes course data.        |
+| Registration Adapter | Manages enrollment queries.      |
+| Calendar Adapter     | Schedules events.                |
+| Email Adapter        | Sends emails.                    |
+| Error Handler        | Handles integration exceptions.  |
+| Retry Queue          | Queued retries for failed calls. |
+
   
   5.3 User Profile & Personalization
-    - Internal Components
-    - Profile Store
-    - Preferences Manager
-    - History Manager
-    - Personalization Engine
+| Component              | Description                            |
+| ---------------------- | -------------------------------------- |
+| Profile Store          | Stores user account metadata.          |
+| Preferences Manager    | Language, notification prefs, etc.     |
+| History Manager        | ConversationHistory + AnalyticsRecord. |
+| Personalization Engine | Generates tailored responses.          |
+
   
   5.4 Notification Subsystem
-    - Internal Components
-    - Event Scheduler
-    - Message Queue
-    - Announcement Dispatcher
-    - Email & Push Drivers
+| Component               | Description                     |
+| ----------------------- | ------------------------------- |
+| Event Scheduler         | Triggers future notifications.  |
+| Message Queue           | Ensures delivery guarantees.    |
+| Announcement Dispatcher | Publishes course announcements. |
+| Email & Push Drivers    | Sends final notifications.      |
+
 
 Step 6 — Sketch Views & Record Design Decisions
 
@@ -107,8 +118,14 @@ Step 6 — Sketch Views & Record Design Decisions
 Step 7 — Analyze the Design Against the Iteration Goal
 
   This refinement improved:
-    - Security: clean boundaries around personal data
-    - Modifiability: AI and integrations can be updated easily
-    - Resilience: retry logic helps when external systems fail
-    - User experience: personalization and reminders improve usability
+| Design Decision                                      | Intended Quality Attribute(s)   | Explanation                                                                                                                                          |
+| ---------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Data isolation in Profile Service                    | Security, Privacy               | Clear boundaries between profile data and other services reduce risk of unauthorized access. Enhances compliance and prevents cross-service leakage. |
+| Retry Queue + Circuit Breaker in Integrations        | Interoperability, Reliability   | Integration subsystem now gracefully handles LMS/Email outages without user facing failure; guaranteed retry ensures reliable message flow.          |
+| Versioned Model Server for AI                        | Modifiability                   | Enables upgrades, A/B testing, and rollback of AI models without affecting upstream flow. Ensures stable system behavior despite ML updates.         |
+| Caching Layer in NLU                                 | Performance, Usability          | Reduces latency for repeated queries; however, cache invalidation and multilingual caching strategies still need refinement.           |
+| Strengthened Preferences & Personalization Engine    | Usability                       | System now tailors answers, reminders, and language selection based on user profile and conversation history. Improves task completion and clarity.  |
+| Scheduler + Message Queue for Notifications          | Usability, Reliability          | Ensures timed notifications are sent even under system load; queue decouples services and ensures delivery consistency.                              |
+| Improved Integration Adapters (LMS, Calendar, Email) | Interoperability, Modifiability | Adapters allow easier API updates                                 |
+
   This ADD Iteration 2 process we completed was successful with stability and efficiency.
