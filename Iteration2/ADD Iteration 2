@@ -1,1 +1,48 @@
-Include in this file the 7 steps for Iteration 2
+ADD Iteration 2 — 7 ADD Steps
+
+This iteration follows the same ADD steps as Iteration 1:
+
+1. Review Input
+2. Establish Iteration Goal by Selecting Drivers
+3. Choose System Elements to Decompose
+4. Choose Design Concepts to Satisfy Drivers
+5. Instantiate Subcomponents and Define Interfaces
+6. Sketch Views and Record Design Decisions
+7. Analyze the Design Against the Iteration Goal
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Step 1 — Review Input
+
+  We revisited requirements with a focus on the subsystems affecting personalization, security, performance, and integration reliability. 
+  This included reviewing quality attributes, external system constraints, and use cases requiring fine-grained behavior.
+
+Step 2 — Establish Iteration Goal by Selecting Drivers
+
+  This iteration targets the four qualities below, and the goal is to refine the subsystems with the highest dependence on these qualities:
+  
+    - Security & privacy (user data, roles, SSO)
+    - Interoperability (external system dependencies)
+    - Modifiability (AI models & external APIs change frequently)
+    - Usability (personalized responses, reminders, multi-language support)
+
+Step 3 — Choose System Elements to Decompose
+
+  We selected four subsystems for refinement, of which all interact very closely with important quality attributes:
+  
+    - NLU / AI subsystem
+    - Integration subsystem
+    - User profile & personalization subsystem
+    - Notification subsystem
+
+Step 4 — Choose Design Concepts to Satisfy Drivers
+
+  These concepts/choices directly carry out processes involving reliability, modifiability, and privacy needs.
+  
+    - Internal subcomponents inside each subsystem
+    - Caching for NLU speed
+    - Retry/circuit breaker patterns inside integrations
+    - Scheduling + message queues for notifications
+    - Data isolation in profile service
+    - Versioned AI model deployment
+  
