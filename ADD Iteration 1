@@ -10,39 +10,66 @@ ADD Process Iteration Steps:
 7. Perform analysis of current design and review iteration goal and design objectives 
 
 
-##ADD Iteration 1 — AI-Powered Digital Assistant Platform (AIDAP)##  
+1. Introduction
 
-####1. Architectural Drivers####
-**1.1 Functional Requirements**
+  The first iteration focuses on shaping the overall structure of the AI-Powered Digital Assistant Platform (AIDAP). 
+  Our aim here is simply to understand what the system must support and to outline an architectural direction that can realistically handle those needs. 
+  At this stage, we are not trying to perfect details or refine interaction patterns. Instead, we are laying out the major components, choosing the architectural style, 
+  and showing how everything fits together at a high level.
 
-*Key functional drivers:*
-
-R1: Conversational access to institutional data  
-R3: Integration with LMS, registration, calendars  
-R5–R6: AI model interpretation + response generation  
-R7: Cloud-native & scalable  
-RS10, RS11: Performance (2 sec response), availability (99.5%)  
-RS7: SSO authentication  
-RL1–RL2: Lecturer content publishing  
-RA1–RA7: Admin integrations, policies, analytics  
-
-**1.2 Quality Attributes**  
-*Primary QAs:*
-
-Performance: Avg 2 sec responses (RS10).  
-Scalability: 5,000 concurrent users (RA7).  
-Availability: 99.5% uptime (RS11).  
-Security & Privacy: SSO + role-based access + compliance (RS7, RA5).  
-Modifiability: Extending AI models, new APIs (RM5, RM3).  
-Interoperability: Standard APIs: REST/GraphQL (RD2).  
-Usability: Conversational UI (RS12).
+2. Key Drivers Considered in Iteration 1
   
-**1.3 Constraints**  
+  2.1 Functional Drivers
 
-Must comply with institutional privacy policies (R8).  
-Must integrate with university SSO.  
-Must be cloud-deployable (R7).  
-Must use standard APIs for all external integration.  
+    These came from our Deliverable 1 analysis and represent the most important capabilities AIDAP must support early in the design.
+    
+    - R1: Conversational access to institutional data	This is the primary purpose of the platform.
+    - R3: Integration with LMS, registration, calendars	Most meaningful queries depend on these systems.
+    - R5: Use AI/NLP to interpret queries	Determines the complexity of the backend and structure of the AI layer.
+    - R6: Combine stored data and live data	Impacts how services coordinate to answer questions accurately.
+
+  2.2 Quality Attributes
+
+    These strongly influence the architecture because they determine how scalable, secure, and reliable the system must be.
+    
+    - Performance (respond around 2 seconds): since students would expect quick, conversational responses.
+    - Availability (approximately 99.5% uptime):	The assistant must be dependable, especially during busy periods.
+    - Scalability: (around 5,000+ concurrent users):	Registration and exam periods create high usage of data and traffic.
+    - Security/Privacy:	AIDAP handles personal information such as grades, schedules, and analytics.
+    - Interoperability:	University systems use various APIs and formats, so integration must be flexible.
+
+  2.3 Constraints
+    - Must run in the cloud:	Influences deployment and scaling decisions.
+    - Must support SSO:	Requires a dedicated authentication mechanism.
+    - Must use standard APIs:	Shapes integration module design.
+    - Must store user data securely:	Impacts both data storage and access controls.
+
+
+3. Reference Architecture Choice
+
+  "Microservices with an API Gateway, supported by cloud-native services and event-driven messaging."
+
+  This was chosen microservices because the AIDAP system pulls together many different responsibilities—AI, notifications, profiles, 
+  integrations—and each one has its own scaling and reliability needs. Microservices allow the more demanding services, especially the AI/NLU ones, 
+  to be scaled independently without wasting resources on lighter services.
   
-####2. Reference Architecture Choice####  
-Selected Architecture: Microservices + Event-Driven Architecture (Cloud-Native)
+  An API Gateway fits naturally into this style because it gives us: a single point for SSO validation, unified access control, consistent routing, 
+  and an easier way for clients to interact with the backend.
+  Event-driven messaging helps with features like notifications, scheduled reminders, and long-running tasks. Instead of clogging up the request-response flow, 
+  these can be handled asynchronously.
+  Overall, this architectural choice provides flexibility, room for future expansion, and good stability during peak usage periods.
+
+4. High-Level Components Identified
+
+These major components make up the initial system structure:
+  - API Gateway – manages incoming requests, routing, authentication, and throttling
+  - Conversational UI (Web/Mobile/Voice) – handles the user interface
+  - NLU / AI Interpreter – performs intent recognition, entity extraction, and language detection
+  - Response Orchestrator – decides which services to call based on the AI interpretation
+  - User Profile Service – stores preferences, history, and personalization data
+  - Integration Services – individual connectors for LMS, registration, calendars, email
+  - Notification Service – manages reminders, announcements, and scheduled tasks
+  - SSO Authentication Layer – connects to university SSO
+  - Data Storage Layer – combines SQL and NoSQL storage
+  - Monitoring / Logging – tracks performance, errors, and general usage statistics
+Each component has a distinct responsibility that makes the system easier to maintain and evolve.
