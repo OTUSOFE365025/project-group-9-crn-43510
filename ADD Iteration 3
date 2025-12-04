@@ -86,6 +86,56 @@ Concepts chosen to address QAs:
 ### Step 7 — Analyze the Design Against the Iteration Goal
 
   #### 7.1 ATAM Utility Tree
+
+##### Utility
+
+  ##### Performance
+    -Latency
+      Scenario: User queries NLU for intent classification during peak hours (stimulus: 1000 concurrent requests; environment: normal operation; response: processes within bounds; measure: 95% under 500ms).
+
+    -Throughput
+      Scenario: Notification subsystem handles bulk announcements (stimulus: 10,000 notifications/min; environment: high load; response: delivers without loss; measure: 99.9% success rate).
+
+
+  ##### Security
+    -Data Protection
+      Scenario: Unauthorized access attempt to user profiles (stimulus: invalid credentials; environment: production; response: denies access and logs; measure: 100% detection and audit).
+
+    -Privacy Compliance
+      Scenario: Data export for GDPR request (stimulus: user request; environment: normal; response: provides encrypted export; measure: within 72 hours).
+
+
+  ##### Reliability
+    -Availability
+      Scenario: External API outage (stimulus: LMS down for 30min; environment: integration failure; response: retries and fails over; measure: system uptime >99.5%).
+
+    -Fault Tolerance
+      Scenario: Queue overload in notifications (stimulus: sudden spike; environment: peak; response: scales and recovers; measure: no data loss).
+
+
+  ##### Modifiability
+    -Ease of Updates
+      Scenario: Deploy new AI model version (stimulus: update request; environment: staging to prod; response: deploys without downtime; measure: under 5min).
+
+    -Extensibility
+      Scenario: Add new integration adapter (stimulus: new API; environment: development; response: integrates seamlessly; measure: <1 day effort).
+
+
+  ##### Usability
+    -Personalization
+      Scenario: User switches language mid-conversation (stimulus: preference change; environment: ongoing session; response: adapts responses; measure: seamless transition).
+
+    -Accessibility
+      Scenario: Multi-device access to dashboard (stimulus: mobile/desktop switch; environment: normal; response: consistent UI; measure: 100% feature parity).
+  
   #### 7.2 ATAM Risk Assessment
 
+| Risk ID | Risk Description                                                                 | Sensitivity Point             | Tradeoff Point                                      | Mitigation Strategy                                      | Priority |
+|---------|----------------------------------------------------------------------------------|-------------------------------|-----------------------------------------------------|----------------------------------------------------------|----------|
+| R1      | Scalability limits in NLU caching during extreme loads could cause latency spikes | Cache sharding configuration  | Performance vs. Complexity (more shards increase management overhead) | Implement auto-scaling and stress testing                | High     |
+| R2      | Integration failures from unreliable external APIs might propagate despite circuit breakers | Retry queue thresholds        | Reliability vs. Cost (more retries increase API usage fees) | Add adaptive backoff and monitoring alerts               | Medium   |
+| R3      | Data encryption in profiles reduces query speed, impacting usability            | Encryption algorithm choice   | Security vs. Performance (stronger encryption slows access) | Use hardware-accelerated encryption and indexing        | High     |
+| R4      | Notification queue clustering could lead to consistency issues in distributed setups | Queue partitioning            | Reliability vs. Maintainability (complex syncing)   | Employ eventual consistency with idempotent operations   | Medium   |
+| R5      | Lack of comprehensive logging might hinder compliance audits                    | Audit logger granularity      | Compliance vs. Storage (detailed logs consume space) | Implement log rotation and selective logging             | Low      |
+| R6      | Model updates in AI could introduce backward-incompatible changes               | Versioning strategy           | Modifiability vs. Stability (frequent updates risk regressions) | Enforce API contracts and automated regression tests    | High     |
 
