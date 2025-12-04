@@ -10,16 +10,16 @@ ADD Iteration 3— 7 ADD Steps
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-###Step 1 — Review Input
+### Step 1 — Review Input
 
 We revisted the requirements with emphasis on the quality attributes, focusing on scalability under load, reliability for critical operations,
 and auditability for data actions.
 
-###Step 2 — Establish Iteration Goal by Selecting Drivers
+### Step 2 — Establish Iteration Goal by Selecting Drivers
 
 This iteration targets quality attributes to refine the previously outlined subsystems, ensuring that the system supports associated use cases.
 
-###Step 3 — Choose System Elements to Decompose
+### Step 3 — Choose System Elements to Decompose
 | Subsystem/Component                                   | Reason for Further Decomposition                                                                 | Addressed QAs |
 |-------------------------------------------------------|----------------------------------------------------------------------------------------------------------|---------------|
 | **NLU / AI Subsystem (Cache Layer & Model Server)**  | Scaling for high-volume queries and inference to meet performance and scalability needs                | QA1, QA8      |
@@ -28,7 +28,7 @@ This iteration targets quality attributes to refine the previously outlined subs
 | **Notification Subsystem (Message Queue & Event Scheduler)** | Load-balanced delivery for reliability and maintainability during peaks                          | QA4, QA5, QA6 |
 
 
-###Step 4 — Choose Design Concepts to Satisfy Drivers
+### Step 4 — Choose Design Concepts to Satisfy Drivers
 
 Concepts chosen to address QAs:
   - Auto scaling and sharding for scalability/performance (QA8,QA1)
@@ -37,9 +37,9 @@ Concepts chosen to address QAs:
   - Encryption, data governance, and export mechanisms for compliance (QA13)
   - Blue-green deployments and monitoring for maintainability (QA6)
 
-###Step 5 — Instantiate Subcomponents & Define Interfaces
+### Step 5 — Instantiate Subcomponents & Define Interfaces
 
-  ####5.1 NLU/AI Subsystem
+  #### 5.1 NLU/AI Subsystem
 | Internal Subcomponent | Description                                            | Addressed QAs |
 |-----------------------|--------------------------------------------------------|---------------|
 | Distributed Cache     | Sharded cache (e.g., Redis) for scalable query handling | QA1, QA8      |
@@ -47,7 +47,7 @@ Concepts chosen to address QAs:
 | Model Registry        | Manages versions for easy updates                      | QA6           |
 | Audit Logger          | Logs all model accesses and changes                    | QA12          |
 
-  ####5.2 Integration Subsystem
+  #### 5.2 Integration Subsystem
 | Subcomponent       | Description                                 | Addressed QAs |
 |--------------------|---------------------------------------------|---------------|
 | Circuit Breaker    | Halts calls to failing APIs                 | QA4, QA5      |
@@ -55,7 +55,7 @@ Concepts chosen to address QAs:
 | Failover Router    | Routes to backups for availability          | QA5           |
 | Compliance Checker | Validates data sync per policies            | QA13          |
  
-  ####5.3 User Profile and Personalization
+  #### 5.3 User Profile and Personalization
 | Subcomponent      | Description                                                  | Addressed QAs |
 |-------------------|--------------------------------------------------------------|---------------|
 | Encrypted Store   | Encrypted database with sharding                             | QA13, QA8     |
@@ -63,7 +63,7 @@ Concepts chosen to address QAs:
 | Data Exporter     | Handles user requests for data review/export/deletion        | QA13          |
 | Update Deployer   | Supports zero-downtime profile updates                       | QA6           |
  
-  ####5.5 - Notification Subsystem
+  #### 5.4 - Notification Subsystem
 | Subcomponent     | Description                                          | Addressed QAs |
 |------------------|------------------------------------------------------|---------------|
 | Queue Cluster    | Redundant queues for reliability                     | QA4, QA5      |
@@ -71,7 +71,7 @@ Concepts chosen to address QAs:
 | Audit Trail      | Logs all notification actions                        | QA12          |
 | Policy Enforcer  | Ensures ethical/policy compliance in dispatches      | QA13          |
 
-###Step 6 — Sketch Views & Record Design Decisions
+### Step 6 — Sketch Views & Record Design Decisions
 
 | Design Decision                                      | Intended Quality Attribute(s)          | Explanation                                                                                                       |
 |------------------------------------------------------|----------------------------------------|-------------------------------------------------------------------------------------------------------------------|
@@ -83,9 +83,9 @@ Concepts chosen to address QAs:
 | Queue Clustering and Load Balancing in Notifications | Reliability, Availability, Scalability| Handles peaks reliably; prevents delays in announcements, with backlog monitoring needed                        |
  
 
-###Step 7 — Analyze the Design Against the Iteration Goal
+### Step 7 — Analyze the Design Against the Iteration Goal
 
-  ####7.1 ATAM Utility Tree
-  ####7.2 ATAM Risk Assessment
+  #### 7.1 ATAM Utility Tree
+  #### 7.2 ATAM Risk Assessment
 
 
