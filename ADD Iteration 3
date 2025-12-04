@@ -1,1 +1,91 @@
-Include in this file the 7 steps for Iteration 3
+ADD Iteration 3— 7 ADD Steps
+
+1. Review Input
+2. Establish Iteration Goal by Selecting Drivers
+3. Choose System Elements to Decompose
+4. Choose Design Concepts to Satisfy Drivers
+5. Instantiate Subcomponents and Define Interfaces
+6. Sketch Views and Record Design Decisions
+7. Analyze the Design Against the Iteration Goal
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+###Step 1 — Review Input
+
+We revisted the requirements with emphasis on the quality attributes, focusing on scalability under load, reliability for critical operations,
+and auditability for data actions.
+
+###Step 2 — Establish Iteration Goal by Selecting Drivers
+
+This iteration targets quality attributes to refine the previously outlined subsystems, ensuring that the system supports associated use cases.
+
+###Step 3 — Choose System Elements to Decompose
+| Subsystem/Component                                   | Reason for Further Decomposition                                                                 | Addressed QAs |
+|-------------------------------------------------------|----------------------------------------------------------------------------------------------------------|---------------|
+| **NLU / AI Subsystem (Cache Layer & Model Server)**  | Scaling for high-volume queries and inference to meet performance and scalability needs                | QA1, QA8      |
+| **Integration Subsystem (Retry Queue & Error Handler)** | Handling API spikes reliably without failures, ensuring availability and interoperability           | QA4, QA5, QA7 |
+| **User Profile & Personalization (Profile Store & History Manager)** | Secure, auditable storage with compliance features for growing data                             | QA12, QA13    |
+| **Notification Subsystem (Message Queue & Event Scheduler)** | Load-balanced delivery for reliability and maintainability during peaks                          | QA4, QA5, QA6 |
+
+
+###Step 4 — Choose Design Concepts to Satisfy Drivers
+
+Concepts chosen to address QAs:
+  - Auto scaling and sharding for scalability/performance (QA8,QA1)
+  - Redundancy, failover, and circuit breakers for reliability/availability (QA4, QA5)
+  - Comprehensive logging and audit trails for auditability (QA12)
+  - Encryption, data governance, and export mechanisms for compliance (QA13)
+  - Blue-green deployments and monitoring for maintainability (QA6)
+
+###Step 5 — Instantiate Subcomponents & Define Interfaces
+
+  ####5.1 NLU/AI Subsystem
+| Internal Subcomponent | Description                                            | Addressed QAs |
+|-----------------------|--------------------------------------------------------|---------------|
+| Distributed Cache     | Sharded cache (e.g., Redis) for scalable query handling | QA1, QA8      |
+| Inference Engine      | Auto-scaling inference with load monitoring           | QA1, QA8      |
+| Model Registry        | Manages versions for easy updates                      | QA6           |
+| Audit Logger          | Logs all model accesses and changes                    | QA12          |
+
+  ####5.2 Integration Subsystem
+| Subcomponent       | Description                                 | Addressed QAs |
+|--------------------|---------------------------------------------|---------------|
+| Circuit Breaker    | Halts calls to failing APIs                 | QA4, QA5      |
+| Rate Limiter       | Manages call frequency for scalability     | QA8           |
+| Failover Router    | Routes to backups for availability          | QA5           |
+| Compliance Checker | Validates data sync per policies            | QA13          |
+ 
+  ####5.3 User Profile and Personalization
+| Subcomponent      | Description                                                  | Addressed QAs |
+|-------------------|--------------------------------------------------------------|---------------|
+| Encrypted Store   | Encrypted database with sharding                             | QA13, QA8     |
+| Access Auditor    | Logs user data actions (User ID, time, action, resource)    | QA12          |
+| Data Exporter     | Handles user requests for data review/export/deletion        | QA13          |
+| Update Deployer   | Supports zero-downtime profile updates                       | QA6           |
+ 
+  ####5.5 - Notification Subsystem
+| Subcomponent     | Description                                          | Addressed QAs |
+|------------------|------------------------------------------------------|---------------|
+| Queue Cluster    | Redundant queues for reliability                     | QA4, QA5      |
+| Load Balancer    | Distributes tasks for scalability                    | QA8           |
+| Audit Trail      | Logs all notification actions                        | QA12          |
+| Policy Enforcer  | Ensures ethical/policy compliance in dispatches      | QA13          |
+
+###Step 6 — Sketch Views & Record Design Decisions
+
+| Design Decision                                      | Intended Quality Attribute(s)          | Explanation                                                                                                       |
+|------------------------------------------------------|----------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| Sharding and Auto-Scaling in NLU/AI                  | Scalability, Performance              | Supports concurrent users and quick responses; requires consistency management                                   |
+| Failover and Circuit Breakers in Integrations        | Reliability, Availability             | Ensures data sync and uptime during failures; adds configuration complexity                                       |
+| Audit Logs and Access Auditors in Profiles           | Auditability                           | Records all actions for observability; balances with storage needs                                               |
+| Encryption, Exporters, and Policy Checks             | Compliance                             | Meets legal/data handling requirements; may impact performance slightly                                         |
+| Blue-Green Deployments and Monitoring                | Maintainability                        | Allows updates without downtime; facilitates monitoring for ongoing improvements                                 |
+| Queue Clustering and Load Balancing in Notifications | Reliability, Availability, Scalability| Handles peaks reliably; prevents delays in announcements, with backlog monitoring needed                        |
+ 
+
+###Step 7 — Analyze the Design Against the Iteration Goal
+
+  ####7.1 ATAM Utility Tree
+  ####7.2 ATAM Risk Assessment
+
+
